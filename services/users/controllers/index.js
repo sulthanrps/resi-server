@@ -89,12 +89,25 @@ class Controller {
 
   static async updateBalance(req, res, next) {
     try {
-      let balance = +req.body.balance
-      const updateBalance = await User.update({balance}, {where: {id: req.user.id}})
+      let balance = +req.body.balance;
+      const updateBalance = await User.update(
+        { balance },
+        { where: { id: req.user.id } }
+      );
 
-      if(!updateBalance[0]) throw {name: "Bad Request"}
+      if (!updateBalance[0]) throw { name: "Bad Request" };
 
-      res.status(200).json({message: "Balance updated"})
+      res.status(200).json({ message: "Balance updated" });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async delete(req, res, next) {
+    try {
+      const {id} = req.user
+      await User.destroy({where: {id}})
+      res.status(200).json({message: "Account deleted"})
     } catch (error) {
       next(error)
     }

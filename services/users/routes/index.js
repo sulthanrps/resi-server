@@ -9,6 +9,7 @@ router.post('/login', Controller.login)
 router.use(authentication)
 
 router.get('/user', Controller.user)
+router.delete('/user', Controller.delete)
 router.patch('/user', Controller.updateProfile)
 router.patch('/balance', Controller.updateBalance)
 
