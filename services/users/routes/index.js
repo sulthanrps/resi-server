@@ -8,6 +8,7 @@ router.post('/login', Controller.login)
 
 router.use(authentication)
 
-router.get('/:id', Controller.user)
+router.get('/user', Controller.user)
+router.patch('/user', Controller.updateProfile)
 
 module.exports = router;
