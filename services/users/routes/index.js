@@ -10,5 +10,6 @@ router.use(authentication)
 
 router.get('/user', Controller.user)
 router.patch('/user', Controller.updateProfile)
+router.patch('/balance', Controller.updateBalance)
 
 module.exports = router;
