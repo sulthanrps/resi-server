@@ -4,4 +4,4 @@ const type = {
   invalidJwt: "jwt invalid",
 };
 
-module.exports = { type };
+module.exports = type;
