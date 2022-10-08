@@ -1,5 +1,6 @@
 const { createToken } = require("../helpers/jwt");
 const { User } = require("../models");
+const {compareHash} = require('../helpers/bcrypt')
 
 class Controller {
   static async register(req, res, next) {
@@ -27,8 +28,25 @@ class Controller {
     }
   }
 
-  static login (req, res, next) {
-    console.log('ini login')
+  static async login (req, res, next) {
+    try {
+      const {email, password} = req.body
+      if(!email) throw {name: "Email is required"}
+      if(!password) throw {name: "Password is required"}
+
+      const user = await User.findOne({where: {email}})
+      if(!user) throw {name: "Invalid email/password"}
+
+      const comparedPass = compareHash(password, user.password)
+      if(!comparedPass) throw {name: "Invalid email/password"}
+
+      const payload = {id: user.id}
+      const access_token = createToken(payload)
+
+      res.status(200).json({access_token})
+    } catch (error) {
+      next(error)
+    }
   }
 }
 
