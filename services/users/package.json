@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon bin/www"
   },
   "repository": {
     "type": "git",
@@ -25,5 +26,8 @@
     "jsonwebtoken": "^8.5.1",
     "pg": "^8.8.0",
     "sequelize": "^6.24.0"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^6.5.1"
   }
 }
