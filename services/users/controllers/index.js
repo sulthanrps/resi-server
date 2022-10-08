@@ -105,11 +105,11 @@ class Controller {
 
   static async delete(req, res, next) {
     try {
-      const {id} = req.user
-      await User.destroy({where: {id}})
-      res.status(200).json({message: "Account deleted"})
+      const { id } = req.user;
+      await User.destroy({ where: { id } });
+      res.status(200).json({ message: "Account deleted" });
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
 }
