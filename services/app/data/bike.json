@@ -1,0 +1,39 @@
+{
+  "bikes": [
+    {
+      "id": 1,
+      "name": "BMX",
+      "price": 500000
+    },
+    {
+      "id": 2,
+      "name": "Hybrid",
+      "price": 500000
+    },
+    {
+      "id": 3,
+      "name": "Folding Bike",
+      "price": 500000
+    },
+    {
+      "id": 4,
+      "name": "Fixie",
+      "price": 500000
+    },
+    {
+      "id": 5,
+      "name": "Road Bike",
+      "price": 500000
+    },
+    {
+      "id": 6,
+      "name": "Mountain Bike",
+      "price": 500000
+    },
+    {
+      "id": 7,
+      "name": "Touring",
+      "price": 500000
+    }
+  ]
+}
