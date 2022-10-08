@@ -5,7 +5,7 @@ const {compareHash} = require('../helpers/bcrypt')
 class Controller {
   static async register(req, res, next) {
     try {
-      let { name, email, password, role, address, phoneNumber, balance } =
+      let { name, email, password, role, profileImg,address, phoneNumber, balance } =
         req.body;
         balance = +balance
       
@@ -17,6 +17,7 @@ class Controller {
         address,
         phoneNumber,
         balance,
+        profileImg
       });
       
       const payload = {id: newUser.id}
@@ -52,10 +53,22 @@ class Controller {
   static async user(req, res, next) {
     try {
       const {id} = req.user
-      const user = await User.findByPk(id)
+      const user = await User.findByPk(id, {})
       if(!user) throw {name: "Data not found"}
 
       res.status(200).json(user)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  static async updateProfile(req, res) {
+    try {
+      const {name, email, address, phoneNumber, profileImg} = req.body
+      const updated = await User.update ({name, email, address, phoneNumber, profileImg}, {where: {id: req.user.id}})
+      if(!updated[0]) throw {name: "Bad request"}
+
+      res.status(200).json({messasge: "Profile updated"})
     } catch (error) {
       next(error)
     }
