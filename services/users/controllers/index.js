@@ -48,6 +48,18 @@ class Controller {
       next(error)
     }
   }
+
+  static async user(req, res, next) {
+    try {
+      const {id} = req.user
+      const user = await User.findByPk(id)
+      if(!user) throw {name: "Data not found"}
+
+      res.status(200).json(user)
+    } catch (error) {
+      next(error)
+    }
+  }
 }
 
 module.exports = Controller;
