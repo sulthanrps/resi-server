@@ -1,9 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const customerRouter = require("./customerRouter");
-const washerRouter = require("./washerRouter");
+const customerRouter = require("./customer");
+const washerRouter = require("./washer");
+const { authentication } = require("../middleware/authentication");
+const Controller = require("../controllers/customer"); //untuk keperluan test
 
-router.use("/customer", customerRouter);
-router.use("/washer", washerRouter);
+router.post("/token", Controller.getTokenById);
+router.use(authentication);
+router.use("/customers", customerRouter);
+router.use("/washers", washerRouter);
 
 module.exports = router;
