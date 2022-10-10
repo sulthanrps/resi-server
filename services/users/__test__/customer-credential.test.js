@@ -1,5 +1,5 @@
 const req = require("supertest")(require("../app"));
-const { User } = require(); //diisi sesuai file path
+const { User } = require("../models"); //diisi sesuai file path
 const REGISTER_END_POINT = "/register";
 const LOGIN_END_POINT = "/login";
 
@@ -9,8 +9,8 @@ describe("================================ CUSTOMER CREDENTIAL TEST ============
   const role = "customer";
 
   beforeAll(async () => {
-    await await User.create({
-      name: "used name",
+    await User.create({
+      name: "usedname",
       email: registeredMail,
       password: registeredPassword,
       profileImg: "used image URL",

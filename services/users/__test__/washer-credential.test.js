@@ -1,5 +1,5 @@
 const req = require("supertest")(require("../app"));
-const { User } = require(); //diisi sesuai file path
+const { User } = require("../models"); //diisi sesuai file path
 const REGISTER_END_POINT = "/register";
 const LOGIN_END_POINT = "/login";
 
@@ -9,7 +9,7 @@ describe("================================ WASHER CREDENTIAL TEST ==============
   const role = "washer";
 
   beforeAll(async () => {
-    await await User.create({
+    await User.create({
       name: "used",
       email: registeredMail,
       password: registeredPassword,
@@ -42,8 +42,6 @@ describe("================================ WASHER CREDENTIAL TEST ==============
       expect(res.status).toBe(201);
       expect(res.body).toBeInstanceOf(Object);
       expect(res.body).toHaveProperty("access_token", expect.any(String));
-      expect(res.body).toHaveProperty("profileImg", expect.any(String));
-      expect(res.body).toHaveProperty("name", expect.any(String));
     });
 
     test("Empty name request", async () => {
@@ -173,8 +171,6 @@ describe("================================ WASHER CREDENTIAL TEST ==============
       expect(res.status).toBe(200);
       expect(res.body).toBeInstanceOf(Object);
       expect(res.body).toHaveProperty("access_token", expect.any(String));
-      expect(res.body).toHaveProperty("profileImg", expect.any(String));
-      expect(res.body).toHaveProperty("name", expect.any(String));
     });
 
     test("Incorrect password request", async () => {
