@@ -1,8 +1,8 @@
 {
   "development": {
     "username": "postgres",
-    "password": "vantatbau12",
-    "database": "revision_resi",
+    "password": "postgres",
+    "database": "resiDB",
     "host": "localhost",
     "dialect": "postgres"
   },

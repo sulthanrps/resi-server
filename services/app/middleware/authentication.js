@@ -1,3 +1,4 @@
+const type = require("../helpers/constant");
 const { verifyToken } = require("../helpers/jwt");
 
 module.exports = {

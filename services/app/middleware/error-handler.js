@@ -1,24 +1,27 @@
 const type = require("../helpers/constant");
 
-modulex.exports = function (err, _, res, _) {
-  let status, response;
+module.exports = function (err, _, res, _) {
+  let data = {};
   switch (err.name) {
     case type.washerPatch:
-      (status = 401), (response = { message: "This book is already taken!" });
+      data = { code: 401, message: "This book is already taken!" };
       break;
     case type.washerWrongPatch:
-      (code = 401),
-        (response = { message: "You have no authority to remove this book!" });
+      data = {
+        code: 401,
+        message: "You have no authority to remove this book!",
+      };
       break;
     case type.invalidJwt:
-      (code = 401), (response = { message: "Your token is no longer valid!" });
+      data = { code: 401, message: "Your token is no longer valid!" };
       break;
     case "JsonWebTokenError":
-      (code = 401), (response = { message: "Your Token is invalid!" });
+      data = { code: 401, message: "Your Token is invalid!" };
       break;
     default:
-      (code = 500), (response = { message: "INTERNAL SERVER ERROR" });
+      data = { code: 500, message: "INTERNAL SERVER ERROR" };
       break;
   }
-  res.status(status).json(data);
+  const { message, code } = data;
+  res.status(code).json({ message });
 };

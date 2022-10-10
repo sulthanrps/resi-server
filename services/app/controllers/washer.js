@@ -85,7 +85,7 @@ module.exports = class Controller {
     //ini maksudnya apa?
     try {
       const { id: WasherId } = req.user;
-
+      console.log(WasherId);
       const dataBooksWasher = await Book.findAll({
         where: { WasherId },
       });
@@ -114,12 +114,12 @@ module.exports = class Controller {
     }
   }
 
-  // static async getTokenById(req, res, next) {
-  //   try {
-  //     const { id } = req.body;
-  //     res.status(200).json(createToken(id));
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
+  static async getTokenById(req, res, next) {
+    try {
+      const { id } = req.body;
+      res.status(200).json(createToken(id));
+    } catch (error) {
+      console.log(error);
+    }
+  }
 };
