@@ -1,6 +1,7 @@
 const { Book } = require("../models");
 const { type } = require("../helpers/constant");
 const { Op } = require("sequelize");
+const getDistanceFromLatLonInKm = require("../helpers/findDistance");
 
 module.exports = class Controller {
   static async patchUpdateStatus(req, res, next) {
@@ -82,8 +83,9 @@ module.exports = class Controller {
   }
 
   static async getBooksByIdPending(req, res, next) {
-    //ini maksudnya apa?
     try {
+      const { lon, lat, dist = 2 } = req.body;
+      console.log(req.body);
       const { id: WasherId } = req.user;
       console.log(WasherId);
       const dataBooksWasher = await Book.findAll({
@@ -104,7 +106,18 @@ module.exports = class Controller {
               return true;
             else return false;
           });
-          if (filtered.length == 0) return el;
+          const coor = JSON.parse(el.location);
+          // console.log(coor, lat, lon);
+          el.dataValues.distance = getDistanceFromLatLonInKm(
+            coor.lat,
+            coor.lon,
+            lat,
+            lon
+          );
+          if (filtered.length == 0 && el.dataValues.distance <= dist) {
+            // console.log(el);
+            return el;
+          }
         })
         .filter((fil) => fil != null);
 
