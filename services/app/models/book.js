@@ -23,6 +23,11 @@ module.exports = (sequelize, DataTypes) => {
       location: DataTypes.STRING,
     },
     {
+      hooks: {
+        beforeCreate: (instance) => {
+          instance.status = "pending"; //pending atau waiting?
+        },
+      },
       sequelize,
       modelName: "Book",
     }

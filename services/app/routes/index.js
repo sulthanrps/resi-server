@@ -1,9 +1,17 @@
 const express = require("express");
 const router = express.Router();
-const customerRouter = require("./customerRouter");
-const washerRouter = require("./washerRouter");
+const customerRouter = require("./customer");
+const washerRouter = require("./washer");
+const bikeRouter = require("./bike");
+const Controller = require("../controllers/customer");
 
-router.use("/customer", customerRouter);
-router.use("/washer", washerRouter);
+const { authentication } = require("../middleware/authentication");
+
+router.post("/token", Controller.getTokenById);
+router.use(authentication);
+router.use("/bikes", bikeRouter);
+
+router.use("/customers", customerRouter);
+router.use("/washers", washerRouter);
 
 module.exports = router;

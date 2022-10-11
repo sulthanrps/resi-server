@@ -27,6 +27,21 @@ async function bookData() {
         date.setDate(date.getDate() + j + 2);
         for (let i = 1; i <= 10; i++) {
           const randIdCust = custId[Math.floor(Math.random() * custId.length)];
+          let ran = (Math.random() * 3) / 100;
+          let coor = [
+            {
+              lon: 115.20079 + ran,
+              lat: -8.677578,
+            },
+            {
+              lon: 106.947828835767 + ran,
+              lat: -6.191868763798379,
+            },
+            {
+              lon: 108.3361907 + ran,
+              lat: -6.3329894,
+            },
+          ];
           data.push({
             UserId: randIdCust,
             BookDate: formatDate(date),
@@ -34,6 +49,7 @@ async function bookData() {
             WasherId: el,
             BikeId: Math.ceil(Math.random() * 7),
             ScheduleId: i,
+            location: coor[Math.floor(Math.random() * 3)],
             status: dataStatus[0],
           });
         }
@@ -88,3 +104,5 @@ const randomBetweenRange = (num, range) => {
 // console.log(randomBetweenRange(num, range));
 
 bookData();
+
+console.log(require("./books.json").books.length);

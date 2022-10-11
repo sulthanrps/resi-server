@@ -1,6 +1,7 @@
 const { createToken } = require("../helpers/jwt");
 const { User } = require("../models");
 const { compareHash } = require("../helpers/bcrypt");
+const midtransClient = require('midtrans-client')
 
 class Controller {
   static async register(req, res, next) {
@@ -96,6 +97,39 @@ class Controller {
       res.status(200).json({ message: "Account deleted" });
     } catch (error) {
       next(error);
+    }
+  }
+
+  static async topup (req, res, next) {
+    try {
+      const {nominal} = req.body
+      const {email} = req.user
+
+      let snap = new midtransClient.Snap({
+        isProduction: false,
+        serverKey: process.env.MIDTRANS_SERVER_KEY
+      })
+
+      let parameter = {
+        transaction_details: {
+          order_id: Date.now(),
+          gross_amount: nominal,
+        },
+        credit_card: {
+          secure: true,
+        },
+        customer_details: {
+          email,
+        },
+      };
+     
+      const transaction = await snap.createTransaction(parameter);
+      let redirect_url = transaction.redirect_url;
+      console.log(redirect_url)
+
+      res.status(200).json({redirect_url})
+    } catch (error) {
+      next(error)
     }
   }
 }
