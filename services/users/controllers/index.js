@@ -13,9 +13,8 @@ class Controller {
         role,
         profileImg,
         phoneNumber,
-        balance,
       } = req.body;
-      balance = +balance;
+      const balance = 0;
 
       const newUser = await User.create({
         name,
@@ -80,7 +79,7 @@ class Controller {
       );
       if (!updated[0]) throw { name: "Bad request" };
 
-      res.status(200).json({ messasge: "Profile updated" });
+      res.status(200).json({ message: "Profile updated" });
     } catch (error) {
       next(error);
     }
