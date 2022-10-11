@@ -49,14 +49,6 @@ module.exports = (sequelize, DataTypes) => {
         notNull: {msg: "Phone number is required"}
       }
     },
-    address: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: {msg: "Address is required"},
-        notNull: {msg: "Address is required"}
-      }
-    },
     profileImg: DataTypes.STRING,
     role: {
       type: DataTypes.STRING,
