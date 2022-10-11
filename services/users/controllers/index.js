@@ -79,7 +79,7 @@ class Controller {
       let balance = +req.body.balance;
       const updateBalance = await User.update(
         { balance },
-        { where: { id: req.user.id } }
+        { where: { id: req.params.id } }
       );
 
       if (!updateBalance[0]) throw { name: "Bad Request" };
