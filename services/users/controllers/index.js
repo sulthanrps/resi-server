@@ -12,18 +12,15 @@ class Controller {
         password,
         role,
         profileImg,
-        address,
         phoneNumber,
-        balance,
       } = req.body;
-      balance = +balance;
+      const balance = 0;
 
       const newUser = await User.create({
         name,
         email,
         password,
         role,
-        address,
         phoneNumber,
         balance,
         profileImg,
@@ -75,14 +72,14 @@ class Controller {
 
   static async updateProfile(req, res, next) {
     try {
-      const { name, email, address, phoneNumber, profileImg } = req.body;
+      const { name, email, phoneNumber, profileImg } = req.body;
       const updated = await User.update(
-        { name, email, address, phoneNumber, profileImg },
+        { name, email, phoneNumber, profileImg },
         { where: { id: req.user.id } }
       );
       if (!updated[0]) throw { name: "Bad request" };
 
-      res.status(200).json({ messasge: "Profile updated" });
+      res.status(200).json({ message: "Profile updated" });
     } catch (error) {
       next(error);
     }
@@ -93,7 +90,7 @@ class Controller {
       let balance = +req.body.balance;
       const updateBalance = await User.update(
         { balance },
-        { where: { id: req.user.id } }
+        { where: { id: req.params.id } }
       );
 
       if (!updateBalance[0]) throw { name: "Bad Request" };
@@ -117,7 +114,7 @@ class Controller {
   static async topup (req, res, next) {
     try {
       const {nominal} = req.body
-      const {email} = req.user
+      const {email, id} = req.user
 
       let snap = new midtransClient.Snap({
         isProduction: false,
@@ -126,7 +123,7 @@ class Controller {
 
       let parameter = {
         transaction_details: {
-          order_id: Date.now(),
+          order_id: id + Date.now(),
           gross_amount: nominal,
         },
         credit_card: {
@@ -139,9 +136,16 @@ class Controller {
      
       const transaction = await snap.createTransaction(parameter);
       let redirect_url = transaction.redirect_url;
-      console.log(redirect_url)
 
       res.status(200).json({redirect_url})
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  static topUpBalance(req, res, next) {
+    try {
+      console.log("ini di topup")
     } catch (error) {
       next(error)
     }
