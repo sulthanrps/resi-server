@@ -1,6 +1,4 @@
 const { Book } = require("../models");
-const { type } = require("../helpers/constant");
-const { signToken } = require("../helpers/jwt");
 
 module.exports = class Controller {
   static async getBooksByIdAll(req, res, next) {
@@ -36,13 +34,19 @@ module.exports = class Controller {
       const { BookDate, GrandTotal, BikeId, ScheduleId, location } = req.body;
       const { id: UserId } = req.user;
 
+      if (!BookDate) throw { name: "emptyBookDate" };
+      if (!GrandTotal) throw { name: "emptyGrandTotal" };
+      if (!BikeId) throw { name: "emptyBikeId" };
+      if (!ScheduleId) throw { name: "emptyScheduleId" };
+      if (!location) throw { name: "emptyLocation" };
+
       const book = await Book.create({
         UserId,
         BookDate,
         GrandTotal,
         BikeId,
         ScheduleId,
-        location,
+        location: JSON.stringify(location),
       });
 
       res.status(201).json({
@@ -58,9 +62,11 @@ module.exports = class Controller {
       const { BookId } = req.params;
       const { status } = req.body;
 
+      if (!status) throw { name: "emptyStatus" };
+
       const book = await Book.findByPk(BookId);
 
-      if (!book) throw { name: type.washerWrongPatch };
+      if (!book) throw { name: "notFound" };
 
       await Book.update({ status }, { where: { id: BookId } });
       res.status(200).json({
@@ -68,16 +74,6 @@ module.exports = class Controller {
       });
     } catch (error) {
       next(error);
-    }
-  }
-
-  static async getTokenById(req, res, next) {
-    //untuk testing
-    try {
-      const { id } = req.body;
-      res.status(200).json(signToken({ id, role: "customer" }));
-    } catch (error) {
-      console.log(error);
     }
   }
 };

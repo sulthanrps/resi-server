@@ -4,7 +4,6 @@ const router = express.Router();
 
 router.get("/", Controller.getBooksByIdAll);
 router.post("/", Controller.createBook);
-router.put("/:BookId", Controller.patchStatusBook);
-// router.post("/token", Controller.getTokenById);
+router.patch("/:BookId", Controller.patchStatusBook);
 
 module.exports = router;

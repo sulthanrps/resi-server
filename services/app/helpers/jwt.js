@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const KEY = process.env.JWT_SECRET;
+const KEY = process.env.SECRET_KEY;
 
 module.exports = {
   signToken(payload) {

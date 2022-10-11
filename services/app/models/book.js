@@ -13,14 +13,56 @@ module.exports = (sequelize, DataTypes) => {
   }
   Book.init(
     {
-      UserId: DataTypes.INTEGER,
-      BookDate: DataTypes.DATE,
-      GrandTotal: DataTypes.INTEGER,
+      UserId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+          notNull: { msg: "User is empty" },
+          notEmpty: { msg: "User is empty" },
+        },
+      },
+      BookDate: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        validate: {
+          notNull: { msg: "Book date is empty" },
+          notEmpty: { msg: "Book date is empty" },
+        },
+      },
+      GrandTotal: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+          notNull: { msg: "Grand total is empty" },
+          notEmpty: { msg: "Grand total is empty" },
+        },
+      },
       WasherId: DataTypes.INTEGER,
-      BikeId: DataTypes.INTEGER,
-      ScheduleId: DataTypes.INTEGER,
+      BikeId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+          notNull: { msg: "Bike category is empty" },
+          notEmpty: { msg: "Bike category is empty" },
+        },
+      },
+      ScheduleId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+          notNull: { msg: "Schedule is empty" },
+          notEmpty: { msg: "Schedule is empty" },
+        },
+      },
       status: DataTypes.STRING,
-      location: DataTypes.STRING,
+      location: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notNull: { msg: "Location is empty" },
+          notEmpty: { msg: "Location is empty" },
+        },
+      },
     },
     {
       hooks: {
