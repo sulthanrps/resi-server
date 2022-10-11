@@ -3,6 +3,9 @@ const Controller = require("../controllers");
 const router = express.Router();
 const authentication = require('../middlewares/authentication')
 
+router.get('/', (req, res) => {
+  res.status(200).json("hallo")
+})
 router.post('/register', Controller.register)
 router.post('/login', Controller.login)
 router.patch('/balance/:id', Controller.updateBalance)
