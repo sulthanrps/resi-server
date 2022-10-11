@@ -1,0 +1,14 @@
+{
+  "schedules": [
+    { "description": "08.00" },
+    { "description": "09.00" },
+    { "description": "10.00" },
+    { "description": "11.00" },
+    { "description": "12.00" },
+    { "description": "13.00" },
+    { "description": "14.00" },
+    { "description": "15.00" },
+    { "description": "16.00" },
+    { "description": "17.00" }
+  ]
+}
