@@ -1,7 +1,6 @@
 const errorHandler = (err, req, res, next) => {
   code = 500;
   message = "Internal server error";
-
   if (
     err.name === "SequelizeValidationError" ||
     err.name === "SequelizeUniqueConstraintError"
@@ -23,8 +22,11 @@ const errorHandler = (err, req, res, next) => {
   } else if (err.name === "Please login first") {
     code = 401;
     message = err.name;
+  } else if (err.name === "JsonWebTokenError") {
+    code = 401;
+    message = "Unauthorized";
   } else if (err.name === "Unauthorized") {
-    code = 403;
+    code = 401;
     message = err.name;
   }
 

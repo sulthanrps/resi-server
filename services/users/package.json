@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --runInBand --forceExit",
+    "test": "jest --runInBand --forceExit --coverage",
     "reset": "npx sequelize-cli db:drop && npx sequelize-cli db:create && npx sequelize-cli db:migrate"
   },
   "repository": {
@@ -29,9 +29,7 @@
   },
   "devDependencies": {
     "jest": "^29.1.2",
+    "sequelize-cli": "^6.5.1",
     "supertest": "^6.3.0"
-  },
-  "devDependencies": {
-    "sequelize-cli": "^6.5.1"
   }
 }

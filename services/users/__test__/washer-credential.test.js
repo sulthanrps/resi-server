@@ -1,10 +1,10 @@
 const req = require("supertest")(require("../app"));
-const { User } = require("../models"); //diisi sesuai file path
+const { User } = require("../models");
 const REGISTER_END_POINT = "/register";
 const LOGIN_END_POINT = "/login";
 
 describe("================================ WASHER CREDENTIAL TEST ================================", () => {
-  const registeredMail = "used1@mail.com";
+  const registeredMail = "used@mail.com";
   const registeredPassword = "lalalalala";
   const role = "washer";
 

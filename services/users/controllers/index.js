@@ -5,19 +5,15 @@ const { compareHash } = require("../helpers/bcrypt");
 class Controller {
   static async register(req, res, next) {
     try {
-      let { name, email, password, role, profileImg, address, phoneNumber } =
-        req.body;
-
+      let { name, email, password, role, profileImg, phoneNumber } = req.body;
       const newUser = await User.create({
         name,
         email,
         password,
         role,
-        address,
         phoneNumber,
         profileImg,
       });
-
       const payload = { id: newUser.id };
       const access_token = createToken(payload);
 
@@ -64,14 +60,14 @@ class Controller {
 
   static async updateProfile(req, res, next) {
     try {
-      const { name, email, address, phoneNumber, profileImg } = req.body;
+      const { name, email, phoneNumber, profileImg } = req.body;
       const updated = await User.update(
-        { name, email, address, phoneNumber, profileImg },
+        { name, email, phoneNumber, profileImg },
         { where: { id: req.user.id } }
       );
       if (!updated[0]) throw { name: "Bad request" };
 
-      res.status(200).json({ messasge: "Profile updated" });
+      res.status(200).json({ message: "Profile updated" });
     } catch (error) {
       next(error);
     }
