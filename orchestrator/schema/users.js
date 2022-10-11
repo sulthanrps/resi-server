@@ -46,6 +46,8 @@ const typeDefs = gql`
       access_token: String
     ): Message
 
+    topUpMidtrans(nominal: Int, access_token: String): Url
+
     login(email: String, password: String): access_token
   }
 `;
@@ -95,20 +97,36 @@ const resolvers = {
 
     updateProfile: async (_, args) => {
       try {
-        const {name, email, phoneNumber, profileImg, access_token} = args
-        const {data} = await axios({
+        const { name, email, phoneNumber, profileImg, access_token } = args;
+        const { data } = await axios({
           method: "PATCH",
-          url: USER_URL + '/user',
-          data: {name, email, phoneNumber, profileImg},
+          url: USER_URL + "/user",
+          data: { name, email, phoneNumber, profileImg },
           headers: {
-            access_token
-          }
-        })
-        return {message: data.message}
-      } catch ({response}) {
-        throw response.data.message
+            access_token,
+          },
+        });
+        return { message: data.message };
+      } catch ({ response }) {
+        throw response.data.message;
       }
-    }
+    },
+
+    topUpMidtrans: async (_, args) => {
+      try {
+        const { nominal, access_token } = args;
+        const { data } = await axios({
+          method: "POST",
+          url: USER_URL + "/midtrans",
+          headers: { access_token },
+          data: { nominal },
+        });
+
+        return {redirect_url: data.redirect_url}
+      } catch (error) {
+        throw error;
+      }
+    },
   },
 };
 

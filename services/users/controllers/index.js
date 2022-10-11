@@ -144,11 +144,12 @@ class Controller {
   }
 
   static topUpBalance(req, res, next) {
-    try {
-      console.log("ini di topup")
-    } catch (error) {
-      next(error)
-    }
+    console.log(req.body)
+    // try {
+    //   console.log("ini di topup")
+    // } catch (error) {
+    //   next(error)
+    // }
   }
 }
 
