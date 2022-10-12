@@ -123,7 +123,7 @@ class Controller {
 
       let parameter = {
         transaction_details: {
-          order_id: id + Date.now(),
+          order_id: `${id}-${Date.now()}`,
           gross_amount: nominal,
         },
         credit_card: {
