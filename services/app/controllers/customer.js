@@ -94,7 +94,7 @@ module.exports = class Controller {
   static async patchStatusBook(req, res, next) {
     try {
       const { BookId } = req.params;
-      const { id: UserId } = req.user;
+      const { id: WasherId } = req.user;
 
       const book = await Book.findByPk(BookId);
       if (book.status == "paid") throw { name: type.statusPaid };
@@ -103,7 +103,7 @@ module.exports = class Controller {
 
       await Book.update(
         { status: "paid" },
-        { where: { [Op.and]: [{ id: BookId }, { UserId }] } }
+        { where: { [Op.and]: [{ id: BookId }, { WasherId }] } }
       );
       res.status(200).json({
         message: `Book ID: ${BookId} change status from ${book.status} to paid`,
