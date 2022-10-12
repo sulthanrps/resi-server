@@ -5,6 +5,24 @@ const { signToken } = require("../helpers/jwt");
 const { Op } = require("sequelize");
 
 module.exports = class Controller {
+  static async getBooksByBooksId(req, res, next) {
+    try {
+      const { id: UserId } = req.user;
+      const { BookId: id } = req.params;
+
+      const books = await Book.findOne({
+        include: { model: Bike },
+        where: { UserId, id },
+      });
+      console.log(type);
+      if (books.length == 0) throw { name: type.notfound };
+
+      res.status(200).json(books);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   static async getBooksByIdAll(req, res, next) {
     try {
       console.log("masuk");

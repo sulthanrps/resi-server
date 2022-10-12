@@ -24,6 +24,7 @@ const typeDefs = gql`
   type Query {
     getBooks(access_token: String, status: String): [Book]
     getBooksPending(access_token: String): [Book]
+    getBooksByBooksId(access_token: String, id: ID): Book
   }
 
   type Mutation {
@@ -47,6 +48,22 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
+    getBooksByBooksId: async (_, args) => {
+      try {
+        const { access_token, id } = args;
+
+        const { data } = await axios({
+          method: "get",
+          url: `${APP_URL}/customers/${id}`,
+          headers: { access_token },
+        });
+        console.log("disini");
+        return data;
+      } catch ({ response }) {
+        return response.data.message;
+      }
+    },
+
     getBooks: async (_, args) => {
       try {
         const { status, access_token } = args;
