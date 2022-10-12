@@ -146,4 +146,4 @@ const resolvers = {
   },
 };
 
-module.exports = { appsTypeDefs: typeDefs, appsResolvers: resolvers };
+module.exports = { appsCustTypeDefs: typeDefs, appsCustResolvers: resolvers };
