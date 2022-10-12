@@ -49,6 +49,7 @@ const typeDefs = gql`
 
     topUpMidtrans(nominal: Int, access_token: String): Url
     login(email: String, password: String): access_token
+    payment(access_token: String): Message
   }
 `;
 const resolvers = {
