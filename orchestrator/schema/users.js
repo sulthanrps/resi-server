@@ -5,6 +5,7 @@ const { USER_URL } = require("../constant");
 
 const typeDefs = gql`
   type User {
+    id: ID
     email: String
     name: String
     role: String
