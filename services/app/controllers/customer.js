@@ -38,12 +38,12 @@ module.exports = class Controller {
 
       const book = await Book.create({
         UserId,
-        BookDate, //bookdate ini bentuknya beruapa apa
+        BookDate,
         GrandTotal,
         BikeId,
         ScheduleId,
-        location, //beruapa apa bentuknya?
-      }); //belum validasi
+        location,
+      });
 
       res.status(201).json({
         message: `Book ID: ${book.id} created`,

@@ -5,6 +5,7 @@ module.exports = {
     const data = require("../data/books.json").books.map((el) => {
       el.createdAt = new Date();
       el.updatedAt = new Date();
+      el.location = JSON.stringify(el.location);
       return el;
     });
 
