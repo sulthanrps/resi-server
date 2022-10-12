@@ -6,7 +6,16 @@ const midtransClient = require('midtrans-client')
 class Controller {
   static async register(req, res, next) {
     try {
-      let { name, email, password, role, profileImg, phoneNumber } = req.body;
+      let {
+        name,
+        email,
+        password,
+        role,
+        profileImg,
+        phoneNumber,
+      } = req.body;
+      const balance = 0;
+
       const newUser = await User.create({
         name,
         email,
@@ -103,7 +112,7 @@ class Controller {
   static async topup (req, res, next) {
     try {
       const {nominal} = req.body
-      const {email} = req.user
+      const {email, id} = req.user
 
       let snap = new midtransClient.Snap({
         isProduction: false,
@@ -112,7 +121,7 @@ class Controller {
 
       let parameter = {
         transaction_details: {
-          order_id: Date.now(),
+          order_id: id + Date.now(),
           gross_amount: nominal,
         },
         credit_card: {
@@ -125,12 +134,20 @@ class Controller {
      
       const transaction = await snap.createTransaction(parameter);
       let redirect_url = transaction.redirect_url;
-      console.log(redirect_url)
 
       res.status(200).json({redirect_url})
     } catch (error) {
       next(error)
     }
+  }
+
+  static topUpBalance(req, res, next) {
+    console.log(req.body)
+    // try {
+    //   console.log("ini di topup")
+    // } catch (error) {
+    //   next(error)
+    // }
   }
 }
 
