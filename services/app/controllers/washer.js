@@ -1,3 +1,4 @@
+
 const { Book, Bike } = require("../models");
 const type = require("../helpers/constant");
 const { Op } = require("sequelize");
@@ -22,7 +23,9 @@ module.exports = class Controller {
         },
       });
 
+
       if (!book) throw { name: type.status };
+
 
       await Book.update({ status }, { where: { id } });
 
@@ -44,6 +47,7 @@ module.exports = class Controller {
         where: { [Op.and]: [{ id }, { WasherId }] },
       });
 
+
       if (!book) throw { name: type.washerWrongPatch };
 
       await Book.update({ WasherId: null }, { where: { id } });
@@ -61,11 +65,13 @@ module.exports = class Controller {
       const { id } = req.params;
       const { id: WasherId } = req.user;
 
+
       const book = await Book.findOne({
         where: { [Op.and]: [{ id }, { WasherId: null }] },
       });
 
       if (!book) throw { name: type.washerPatch };
+
 
       let data = await Book.update({ WasherId }, { where: { id } });
       if (!data[0]) throw { name: type.washerPatch };
@@ -115,7 +121,7 @@ module.exports = class Controller {
 
   static async getBooksByIdPending(req, res, next) {
     try {
-      //const { lon, lat, dist = 2 } = req.body;
+
 
       const { lon, lat, dist = 2 } = req.query;
 

@@ -1,8 +1,8 @@
 const { Book, Bike } = require("../models");
-
 const type = require("../helpers/constant");
 const { signToken } = require("../helpers/jwt");
 const { Op } = require("sequelize");
+
 
 module.exports = class Controller {
   static async getBooksByBooksId(req, res, next) {
@@ -79,8 +79,10 @@ module.exports = class Controller {
         BikeId,
         ScheduleId,
 
+
         location,
         status: "wait for washer",
+
       });
 
       res.status(201).json({
@@ -95,6 +97,8 @@ module.exports = class Controller {
     try {
       const { BookId } = req.params;
       const { id: WasherId } = req.user;
+
+      if (!status) throw { name: "emptyStatus" };
 
       const book = await Book.findByPk(BookId);
       if (book.status == "paid") throw { name: type.statusPaid };
@@ -112,6 +116,7 @@ module.exports = class Controller {
       next(error);
     }
   }
+
 
   static async getTokenById(req, res, next) {
     //untuk testing
@@ -139,4 +144,5 @@ module.exports = class Controller {
       next(error);
     }
   }
+
 };
