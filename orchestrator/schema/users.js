@@ -127,8 +127,6 @@ const resolvers = {
         throw error;
       }
     },
-
-
   },
 };
 
