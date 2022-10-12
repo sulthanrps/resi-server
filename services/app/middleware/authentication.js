@@ -4,9 +4,9 @@ const { verifyToken } = require("../helpers/jwt");
 module.exports = {
   async authentication(req, _, next) {
     try {
-      const { id, role } = verifyToken(req.headers.access_token);
+      const { id } = verifyToken(req.headers.access_token);
 
-      req.user = { id, role };
+      req.user = { id };
 
       next();
     } catch (error) {

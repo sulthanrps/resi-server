@@ -5,35 +5,15 @@ const redis = require("../config");
 const { APP_URL, USER_URL } = require("../constant");
 
 const typeDefs = gql`
-  type Ingredients {
+  type Book {
     id: ID
-    name: String
-  }
-
-  type User {
-    _id: String!
-    username: String!
-    email: String!
-    role: String!
-    phoneNumber: String!
-    address: String!
-  }
-
-  type Category {
-    id: ID
-    name: String
-  }
-  type Item {
-    id: ID
-    name: String
-    description: String
-    price: Int
-    imgUrl: String
-    authorId: String
-    categoryId: Int
-    Category: Category
-    Ingredients: [Ingredients]
-    User: User
+    UserId: Int
+    BookDate: String
+    GrandTotal: Int
+    BikeId: Int
+    ScheduleId: Int
+    status: String
+    location: String
   }
 
   type Response {
@@ -41,20 +21,22 @@ const typeDefs = gql`
   }
 
   type Query {
-    getapps: [Item]
-    getItemById(id: ID): Item
+    getBooks(access_token: String): [Book]
+    getBooksPending(access_token: String): [Book]
   }
 
   type Mutation {
-    postItem(
-      name: String
-      description: String
-      price: Int
-      imgUrl: String
-      authorId: String
-      categoryId: Int
-      ingredients: String
+    createBook(
+      access_token: String
+      BookDate: String!
+      GrandTotal: Int
+      BikeId: Int!
+      ScheduleId: Int!
+      lon: String!
+      lat: String!
     ): Response
+
+    patchStatusBook(id: ID, status: String, access_token: String): Response
 
     deleteItem(id: ID): Response
   }
@@ -62,48 +44,82 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    getapps: async () => {
+    getBooks: async (_, args) => {
       try {
-        const apps = await redis.get("app:apps");
+        const { data } = await axios({
+          method: "get",
+          url: `${APP_URL}/customers`,
+          headers: args,
+        });
+        return data;
+      } catch ({ response }) {
+        return response.data.message;
+      }
+    },
 
-        if (!apps) {
-          let dataUsersRedis = await redis.get("app:users");
-          if (!dataUsersRedis) {
-            const { data } = await axios.get(USER_URL + "/users/");
-            await redis.set("app:users", JSON.stringify(data));
-            dataUsersRedis = await redis.get("app:users");
-          }
-          let { data } = await axios.get(`${APP_URL}/apps`);
-          data = data.map((el) => {
-            el.User = JSON.parse(dataUsersRedis).filter(
-              (ele) => ele["_id"] == el.authorId
-            )[0];
-            return el;
-          });
-          await redis.set("app:apps", JSON.stringify(data));
-          return data;
-        }
-
-        return JSON.parse(apps);
-      } catch (error) {
-        return error;
+    getBooksPending: async (_, args) => {
+      try {
+        const { data } = await axios({
+          method: "get",
+          url: `${APP_URL}/customers/pending`,
+          headers: args,
+        });
+        return data;
+      } catch ({ response }) {
+        return response.data.message;
       }
     },
   },
 
   Mutation: {
-    postItem: async (_, args) => {
+    createBook: async (_, args) => {
       try {
-        // console.log(args);
-        let { data } = await axios.post(APP_URL + "/apps", {
-          ...args,
+        const {
+          BookDate,
+          GrandTotal,
+          BikeId,
+          ScheduleId,
+          lon,
+          lat,
+          access_token,
+        } = args;
+        const { data } = await axios({
+          method: "post",
+          url: APP_URL + "/customers",
+          headers: { access_token },
+          data: {
+            BookDate,
+            GrandTotal,
+            BikeId,
+            ScheduleId,
+            lon,
+            lat,
+          },
         });
-        const dataNewapps = await axios.get(APP_URL + "/apps/");
 
-        await redis.set("app:apps", JSON.stringify(dataNewapps.data));
-        return { message: data };
+        return data;
       } catch ({ response }) {
-        return response.data;
+        throw response.data;
+      }
+    },
+
+    patchStatusBook: async (_, args) => {
+      try {
+        const { id, status, access_token } = args;
+
+        console.log(APP_URL + "/customers/" + id);
+        const { data } = await axios({
+          method: "Patch",
+          url: APP_URL + "/customers/" + id,
+          data: { status },
+          headers: {
+            access_token,
+          },
+        });
+        console.log(data);
+        return data;
+      } catch ({ response }) {
+        throw response.data;
       }
     },
   },

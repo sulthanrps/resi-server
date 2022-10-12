@@ -9,6 +9,7 @@ module.exports = class Controller {
 
       const data = await Book.findAll({
         where: { UserId },
+        order: [["updatedAt", "DESC"]],
       });
 
       res.status(200).json(data);
@@ -33,7 +34,8 @@ module.exports = class Controller {
 
   static async createBook(req, res, next) {
     try {
-      const { BookDate, GrandTotal, BikeId, ScheduleId, location } = req.body;
+      const { BookDate, GrandTotal, BikeId, ScheduleId, lon, lat } = req.body;
+      const location = JSON.stringify({ lon, lat });
       const { id: UserId } = req.user;
 
       const book = await Book.create({
@@ -43,6 +45,7 @@ module.exports = class Controller {
         BikeId,
         ScheduleId,
         location,
+        status: "wait for washer",
       });
 
       res.status(201).json({
@@ -57,6 +60,7 @@ module.exports = class Controller {
     try {
       const { BookId } = req.params;
       const { status } = req.body;
+      console.log(BookId);
 
       const book = await Book.findByPk(BookId);
 

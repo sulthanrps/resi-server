@@ -1,12 +1,12 @@
-const { Book } = require("../models");
-const { type } = require("../helpers/constant");
+const { Book, Bike } = require("../models");
+const type = require("../helpers/constant");
 const { Op } = require("sequelize");
 const getDistanceFromLatLonInKm = require("../helpers/findDistance");
 
 module.exports = class Controller {
   static async patchUpdateStatus(req, res, next) {
     try {
-      const { BookId: id } = req.params;
+      const { BookId } = req.params;
       const { status } = req.body;
       const { id: WasherId } = req.user;
 
@@ -56,7 +56,7 @@ module.exports = class Controller {
 
       if (!book) throw { name: type.washerWrongPatch };
 
-      await Book.update({ WasherId }, { where: { id } });
+      await Book.update({ WasherId, status: "taken" }, { where: { id } });
 
       res.status(200).json({ message: `Book ID: ${id} added` });
     } catch (error) {
@@ -64,17 +64,40 @@ module.exports = class Controller {
     }
   }
 
-  static async getBooksById(req, res, next) {
+  static async getBooksByWasherId(req, res, next) {
     try {
       const { id: WasherId } = req.user;
 
       const books = await Book.findAll({
+        include: { model: Bike },
         order: [
           ["BookDate", "ASC"],
           ["ScheduleId", "ASC"],
         ],
         where: { WasherId },
       });
+
+      res.status(200).json(books);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async getBooksByBooksId(req, res, next) {
+    try {
+      const { id: WasherId } = req.user;
+      const { id } = req.params;
+
+      const books = await Book.findAll({
+        include: { model: Bike },
+        order: [
+          ["BookDate", "ASC"],
+          ["ScheduleId", "ASC"],
+        ],
+        where: { WasherId, id },
+      });
+      console.log(type);
+      if (books.length == 0) throw { name: type.notfound };
 
       res.status(200).json(books);
     } catch (error) {
@@ -94,6 +117,7 @@ module.exports = class Controller {
 
       const data = await Book.findAll({
         where: { WasherId: null },
+        include: { model: Bike },
       });
 
       const newData = data

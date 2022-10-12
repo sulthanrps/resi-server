@@ -18,6 +18,9 @@ module.exports = function (err, _, res, _) {
     case "JsonWebTokenError":
       data = { code: 401, message: "Your Token is invalid!" };
       break;
+    case type.notfound:
+      data = { code: 404, message: "Data Not Found!" };
+      break;
     default:
       data = { code: 500, message: "INTERNAL SERVER ERROR" };
       break;
