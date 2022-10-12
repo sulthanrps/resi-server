@@ -22,10 +22,8 @@ class Controller {
         password,
         role,
         phoneNumber,
-        balance,
         profileImg,
       });
-
       const payload = { id: newUser.id };
       const access_token = createToken(payload);
 

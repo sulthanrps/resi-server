@@ -4,8 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+
+    "test": "jest --runInBand --forceExit --coverage",
+    "reset": "npx sequelize-cli db:drop && npx sequelize-cli db:create && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
     "dev": "nodemon bin/www",
     "start": "node bin/www"
+
   },
   "repository": {
     "type": "git",
@@ -27,5 +31,9 @@
     "jsonwebtoken": "^8.5.1",
     "pg": "^8.8.0",
     "sequelize": "^6.24.0"
+  },
+  "devDependencies": {
+    "jest": "^29.1.2",
+    "supertest": "^6.3.0"
   }
 }

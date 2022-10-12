@@ -1,6 +1,8 @@
 const { Book } = require("../models");
+
 const type = require("../helpers/constant");
 const { signToken } = require("../helpers/jwt");
+
 
 module.exports = class Controller {
   static async getBooksByIdAll(req, res, next) {
@@ -38,14 +40,23 @@ module.exports = class Controller {
       const location = JSON.stringify({ lon, lat });
       const { id: UserId } = req.user;
 
+      if (!BookDate) throw { name: "emptyBookDate" };
+      if (!GrandTotal) throw { name: "emptyGrandTotal" };
+      if (!BikeId) throw { name: "emptyBikeId" };
+      if (!ScheduleId) throw { name: "emptyScheduleId" };
+      if (!location) throw { name: "emptyLocation" };
+
       const book = await Book.create({
         UserId,
         BookDate,
         GrandTotal,
         BikeId,
         ScheduleId,
+
+
         location,
         status: "wait for washer",
+
       });
 
       res.status(201).json({
@@ -62,9 +73,11 @@ module.exports = class Controller {
       const { status } = req.body;
       console.log(BookId);
 
+      if (!status) throw { name: "emptyStatus" };
+
       const book = await Book.findByPk(BookId);
 
-      if (!book) throw { name: type.washerWrongPatch };
+      if (!book) throw { name: "notFound" };
 
       await Book.update({ status }, { where: { id: BookId } });
       res.status(200).json({
@@ -74,6 +87,7 @@ module.exports = class Controller {
       next(error);
     }
   }
+
 
   static async getTokenById(req, res, next) {
     //untuk testing
@@ -100,4 +114,5 @@ module.exports = class Controller {
       next(error);
     }
   }
+
 };
