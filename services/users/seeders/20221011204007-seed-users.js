@@ -2,17 +2,18 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    const data = require("../data/bike.json").bikes.map((el) => {
+    const data = require("../data/users.json").users.map((el) => {
+      delete el.address;
       delete el.id;
       el.createdAt = new Date();
       el.updatedAt = new Date();
       return el;
     });
 
-    await queryInterface.bulkInsert("Bikes", data);
+    await queryInterface.bulkInsert("Users", data);
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete("Bikes");
+    await queryInterface.bulkDelete("Users");
   },
 };

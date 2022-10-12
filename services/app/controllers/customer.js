@@ -1,5 +1,9 @@
 const { Book } = require("../models");
 
+const type = require("../helpers/constant");
+const { signToken } = require("../helpers/jwt");
+
+
 module.exports = class Controller {
   static async getBooksByIdAll(req, res, next) {
     try {
@@ -7,6 +11,7 @@ module.exports = class Controller {
 
       const data = await Book.findAll({
         where: { UserId },
+        order: [["updatedAt", "DESC"]],
       });
 
       res.status(200).json(data);
@@ -31,7 +36,8 @@ module.exports = class Controller {
 
   static async createBook(req, res, next) {
     try {
-      const { BookDate, GrandTotal, BikeId, ScheduleId, location } = req.body;
+      const { BookDate, GrandTotal, BikeId, ScheduleId, lon, lat } = req.body;
+      const location = JSON.stringify({ lon, lat });
       const { id: UserId } = req.user;
 
       if (!BookDate) throw { name: "emptyBookDate" };
@@ -46,7 +52,11 @@ module.exports = class Controller {
         GrandTotal,
         BikeId,
         ScheduleId,
-        location: JSON.stringify(location),
+
+
+        location,
+        status: "wait for washer",
+
       });
 
       res.status(201).json({
@@ -61,6 +71,7 @@ module.exports = class Controller {
     try {
       const { BookId } = req.params;
       const { status } = req.body;
+      console.log(BookId);
 
       if (!status) throw { name: "emptyStatus" };
 
@@ -76,4 +87,32 @@ module.exports = class Controller {
       next(error);
     }
   }
+
+
+  static async getTokenById(req, res, next) {
+    //untuk testing
+    try {
+      const { id } = req.body;
+      res.status(200).json(signToken({ id, role: "customer" }));
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  static async deleteBook(req, res, next) {
+    //untuk testing
+    try {
+      const { BookId: id } = req.params;
+
+      const book = await Book.destroy({
+        where: { id },
+      });
+      if (book < 1) throw { name: type.notfound };
+      res.status(201).json({
+        message: `Book ID: ${id} deleted`,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
 };

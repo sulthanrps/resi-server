@@ -1,4 +1,6 @@
-const { Book } = require("../models");
+
+const { Book, Bike } = require("../models");
+const type = require("../helpers/constant");
 const { Op } = require("sequelize");
 const getDistanceFromLatLonInKm = require("../helpers/findDistance");
 
@@ -7,15 +9,22 @@ module.exports = class Controller {
     try {
       const { id } = req.params;
       const { status } = req.body;
-      const { id: WasherId } = req.user;
+      const { id: userId } = req.user;
 
       if (!status) throw { name: "emptyStatus" };
 
       const book = await Book.findOne({
-        where: { [Op.and]: [{ id }, { WasherId }] },
+        where: {
+          [Op.and]: [
+            { id },
+            { [Op.or]: [{ UserId: userId }, { WasherId: userId }] },
+          ],
+        },
       });
 
-      if (!book) throw { name: "notFound" };
+
+      if (!book) throw { name: type.status };
+
 
       await Book.update({ status }, { where: { id } });
 
@@ -31,12 +40,14 @@ module.exports = class Controller {
     try {
       const { id } = req.params;
       const { id: WasherId } = req.user;
+      console.log(id, WasherId);
 
       const book = await Book.findOne({
         where: { [Op.and]: [{ id }, { WasherId }] },
       });
 
-      if (!book) throw { name: "notFound" };
+
+      if (!book) throw { name: type.washerWrongPatch };
 
       await Book.update({ WasherId: null }, { where: { id } });
 
@@ -52,12 +63,18 @@ module.exports = class Controller {
     try {
       const { id } = req.params;
       const { id: WasherId } = req.user;
+      console.log(id);
 
-      const book = await Book.findByPk(id);
 
-      if (!book) throw { name: "notFound" };
+      const book = await Book.findOne({
+        where: { [Op.and]: [{ id }, { WasherId: null }] },
+      });
 
-      await Book.update({ WasherId }, { where: { id } });
+      if (!book) throw { name: type.washerPatch };
+
+
+      let data = await Book.update({ WasherId }, { where: { id } });
+      if (!data[0]) throw { name: type.washerPatch };
 
       res.status(200).json({ message: `Book ID: ${id} picked` });
     } catch (error) {
@@ -65,11 +82,12 @@ module.exports = class Controller {
     }
   }
 
-  static async getBooksById(req, res, next) {
+  static async getBooksByWasherId(req, res, next) {
     try {
       const { id: WasherId } = req.user;
 
       const books = await Book.findAll({
+        include: { model: Bike },
         order: [
           ["BookDate", "ASC"],
           ["ScheduleId", "ASC"],
@@ -83,9 +101,32 @@ module.exports = class Controller {
     }
   }
 
+  static async getBooksByBooksId(req, res, next) {
+    try {
+      const { id: WasherId } = req.user;
+      const { id } = req.params;
+
+      const books = await Book.findAll({
+        include: { model: Bike },
+
+        where: { WasherId, id },
+      });
+      console.log(type);
+      if (books.length == 0) throw { name: type.notfound };
+
+      res.status(200).json(books);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   static async getBooksByIdPending(req, res, next) {
     try {
-      const { lon, lat, dist = 2 } = req.body;
+
+      //const { lon, lat, dist = 2 } = req.body;
+
+      const { lon, lat, dist = 2 } = req.query;
+
       const { id: WasherId } = req.user;
       const dataBooksWasher = await Book.findAll({
         where: { WasherId },
@@ -93,6 +134,7 @@ module.exports = class Controller {
 
       const data = await Book.findAll({
         where: { WasherId: null },
+        include: { model: Bike },
       });
 
       const newData = data
@@ -117,7 +159,7 @@ module.exports = class Controller {
           }
         })
         .filter((fil) => fil != null);
-
+      // console.log(newData);
       res.status(200).json(newData);
     } catch (error) {
       next(error);

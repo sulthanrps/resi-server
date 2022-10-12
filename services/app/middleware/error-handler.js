@@ -15,6 +15,12 @@ module.exports = function (err, req, res, next) {
         message: "You have no authority to remove this book!",
       };
       break;
+    case type.status:
+      data = {
+        code: 401,
+        message: "You have no authority to change status of this book!",
+      };
+      break;
     case type.invalidJwt:
       data = { code: 400, message: "Your token is no longer valid!" };
       break;
@@ -42,10 +48,13 @@ module.exports = function (err, req, res, next) {
     case "JsonWebTokenError":
       data = { code: 401, message: "Your Token is invalid!" };
       break;
+    case type.notfound:
+      data = { code: 404, message: "Data Not Found!" };
+      break;
     default:
       data = { code: 500, message: "INTERNAL SERVER ERROR" };
       break;
   }
   const { message, code } = data;
-  res.status(code).json({ message });
+  res.status(data.code).json({ message });
 };
