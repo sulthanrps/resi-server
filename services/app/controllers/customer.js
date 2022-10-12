@@ -13,6 +13,7 @@ module.exports = class Controller {
       const books = await Book.findOne({
         include: { model: Bike },
         where: { UserId, id },
+        order: [["updatedAt", "DESC"]],
       });
       console.log(type);
       if (books.length == 0) throw { name: type.notfound };
@@ -29,7 +30,6 @@ module.exports = class Controller {
       const { id: UserId } = req.user;
       let { status } = req.query;
       if (!status) status = "taken";
-      console.log({ status });
 
       const data = await Book.findAll({
         where: { [Op.and]: [{ UserId }, { status }] },
@@ -94,19 +94,19 @@ module.exports = class Controller {
   static async patchStatusBook(req, res, next) {
     try {
       const { BookId } = req.params;
-      // const { status } = req.body;
       const { id: UserId } = req.user;
-      console.log(BookId);
-
-      if (!status) throw { name: "emptyStatus" };
 
       const book = await Book.findByPk(BookId);
+      if (book.status == "paid") throw { name: type.statusPaid };
 
       if (!book) throw { name: "notFound" };
 
-      await Book.update({ status: "paid" }, { where: { id: BookId, UserId } });
+      await Book.update(
+        { status: "paid" },
+        { where: { [Op.and]: [{ id: BookId }, { UserId }] } }
+      );
       res.status(200).json({
-        message: `Book ID: ${BookId} change status from ${book.status} to ${status}`,
+        message: `Book ID: ${BookId} change status from ${book.status} to paid`,
       });
     } catch (error) {
       next(error);
@@ -122,6 +122,7 @@ module.exports = class Controller {
       console.log(error);
     }
   }
+
   static async deleteBook(req, res, next) {
     //untuk testing
     try {

@@ -21,6 +21,12 @@ module.exports = function (err, req, res, next) {
         message: "You have no authority to change status of this book!",
       };
       break;
+    case type.statusPaid:
+      data = {
+        code: 400,
+        message: "This book is already paid!",
+      };
+      break;
     case type.invalidJwt:
       data = { code: 400, message: "Your token is no longer valid!" };
       break;
