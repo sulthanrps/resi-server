@@ -11,6 +11,7 @@ const typeDefs = gql`
     BookDate: String
     GrandTotal: Int
     BikeId: Int
+    WasherId: Int
     ScheduleId: Int
     status: String
     location: String

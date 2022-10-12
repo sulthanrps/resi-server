@@ -12,6 +12,12 @@ module.exports = function (err, _, res, _) {
         message: "You have no authority to remove this book!",
       };
       break;
+    case type.status:
+      data = {
+        code: 401,
+        message: "You have no authority to change status of this book!",
+      };
+      break;
     case type.invalidJwt:
       data = { code: 401, message: "Your token is no longer valid!" };
       break;

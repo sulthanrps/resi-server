@@ -10,7 +10,6 @@ const { authentication } = require("../middleware/authentication");
 router.post("/token", Controller.getTokenById);
 router.use(authentication);
 router.use("/bikes", bikeRouter);
-
 router.use("/customers", customerRouter);
 router.use("/washers", washerRouter);
 

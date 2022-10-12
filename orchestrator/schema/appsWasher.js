@@ -13,7 +13,17 @@ const typeDefs = gql`
     BikeId: Int
     ScheduleId: Int
     status: String
+    WasherId: Int
     location: String
+    distance: Float
+    Bike: Bike
+  }
+
+  type Bike {
+    id: ID
+    name: String
+    imgUrl: String
+    price: Int
   }
 
   type Response {
@@ -21,36 +31,32 @@ const typeDefs = gql`
   }
 
   type Query {
-    getBooks(access_token: String): [Book]
-    getBooksPending(access_token: String): [Book]
+    getWasherBooks(access_token: String): [Book]
+
+    getWasherBooksPending(
+      access_token: String
+      lon: String
+      lat: String
+      dist: Int
+    ): [Book]
+
+    getWasherBooksByBooksId(access_token: String, id: ID): [Book]
   }
 
   type Mutation {
-    createBook(
-      access_token: String
-      BookDate: String!
-      GrandTotal: Int
-      BikeId: Int!
-      ScheduleId: Int!
-      lon: String!
-      lat: String!
-    ): Response
-
-    patchStatusBook(id: ID, status: String, access_token: String): Response
-
-    deleteItem(id: ID): Response
-
-    deleteBook(id: ID, access_token: String): Response
+    washerPickBook(id: ID, access_token: String): Response
+    washerRemoveBook(id: ID, access_token: String): Response
+    washerUpdateBook(id: ID, access_token: String, status: String): Response
   }
 `;
 
 const resolvers = {
   Query: {
-    getBooks: async (_, args) => {
+    getWasherBooks: async (_, args) => {
       try {
         const { data } = await axios({
           method: "get",
-          url: `${APP_URL}/customers`,
+          url: `${APP_URL}/washers`,
           headers: args,
         });
         return data;
@@ -59,85 +65,79 @@ const resolvers = {
       }
     },
 
-    getBooksPending: async (_, args) => {
+    getWasherBooksPending: async (_, args) => {
       try {
+        const { access_token, lon, lat, dist = 2 } = args;
+        console.log(dist);
+        if (dist == "undefined") dist = null;
         const { data } = await axios({
           method: "get",
-          url: `${APP_URL}/customers/pending`,
-          headers: args,
+          url: `${APP_URL}/washers/books?lon=${lon}&lat=${lat}&dist=${dist}`,
+          headers: { access_token },
         });
         return data;
       } catch ({ response }) {
         return { message: response.data.message };
+      }
+    },
+
+    getWasherBooksByBooksId: async (_, args) => {
+      try {
+        const { access_token, id } = args;
+        const { data } = await axios({
+          method: "get",
+          url: `${APP_URL}/washers/books/${id}`,
+          headers: { access_token },
+        });
+        console.log("disini");
+        return data;
+      } catch ({ response }) {
+        return response.data.message;
       }
     },
   },
 
   Mutation: {
-    createBook: async (_, args) => {
+    washerPickBook: async (_, args) => {
       try {
-        const {
-          BookDate,
-          GrandTotal,
-          BikeId,
-          ScheduleId,
-          lon,
-          lat,
-          access_token,
-        } = args;
+        const { access_token, id } = args;
+
         const { data } = await axios({
-          method: "post",
-          url: APP_URL + "/customers",
+          method: "patch",
+          url: `${APP_URL}/washers/books/${id}`,
           headers: { access_token },
-          data: {
-            BookDate,
-            GrandTotal,
-            BikeId,
-            ScheduleId,
-            lon,
-            lat,
-          },
         });
-
         return data;
       } catch ({ response }) {
         return { message: response.data.message };
       }
     },
 
-    patchStatusBook: async (_, args) => {
+    washerRemoveBook: async (_, args) => {
       try {
-        const { id, status, access_token } = args;
+        const { access_token, id } = args;
 
-        console.log(APP_URL + "/customers/" + id);
         const { data } = await axios({
-          method: "Patch",
-          url: APP_URL + "/customers/" + id,
+          method: "patch",
+          url: `${APP_URL}/washers/books/${id}/remove`,
+          headers: { access_token },
+        });
+        return data;
+      } catch ({ response }) {
+        return { message: response.data.message };
+      }
+    },
+
+    washerRemoveBook: async (_, args) => {
+      try {
+        const { access_token, id, status } = args;
+
+        const { data } = await axios({
+          method: "patch",
+          url: `${APP_URL}/washers/books/${id}/remove`,
+          headers: { access_token },
           data: { status },
-          headers: {
-            access_token,
-          },
         });
-        console.log(data);
-        return data;
-      } catch ({ response }) {
-        return { message: response.data.message };
-      }
-    },
-
-    deleteBook: async (_, args) => {
-      try {
-        const { id, access_token } = args;
-
-        console.log(APP_URL + "/customers/" + id);
-        const { data } = await axios({
-          method: "delete",
-          url: APP_URL + "/customers/" + id,
-          headers: {
-            access_token,
-          },
-        });
-        console.log(data);
         return data;
       } catch ({ response }) {
         return { message: response.data.message };
