@@ -11,6 +11,7 @@ const typeDefs = gql`
     profileImg: String
     balance: Int
     phoneNumber: String
+    address: String
   }
 
   type access_token {
@@ -122,7 +123,7 @@ const resolvers = {
           data: { nominal },
         });
 
-        return {redirect_url: data.redirect_url}
+        return { redirect_url: data.redirect_url };
       } catch (error) {
         throw error;
       }

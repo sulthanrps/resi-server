@@ -3,37 +3,44 @@
     {
       "id": 1,
       "name": "BMX",
-      "price": 500000
+      "price": 500000,
+      "imgUrl": "https://i.imgur.com/HnVKbbI.png"
     },
     {
       "id": 2,
       "name": "Hybrid",
-      "price": 500000
+      "price": 500000,
+      "imgUrl": "https://i.imgur.com/m1HFh3n.png"
     },
     {
       "id": 3,
       "name": "Folding Bike",
-      "price": 500000
+      "price": 500000,
+      "imgUrl": "https://i0.wp.com/www.vogelbikes.com/wp-content/uploads/2020/05/Carbon-folding-GIF3-e1591192995116.png?fit=1919%2C1582&ssl=1"
     },
     {
       "id": 4,
       "name": "Fixie",
-      "price": 500000
+      "price": 500000,
+      "imgUrl": "https://i.imgur.com/tFqcpxU.png"
     },
     {
       "id": 5,
       "name": "Road Bike",
-      "price": 500000
+      "price": 500000,
+      "imgUrl": "https://contents.mediadecathlon.com/p1604119/k$be03faa0a9d6698c805ddf165b3fc0e9/rc-100-abyss-cycle-touring-road-bike-grey.webp?format=auto&quality=40&f=452x452"
     },
     {
       "id": 6,
       "name": "Mountain Bike",
-      "price": 500000
+      "price": 500000,
+      "imgUrl": "https://i.imgur.com/Ev4ERZV.png"
     },
     {
       "id": 7,
       "name": "Touring",
-      "price": 500000
+      "price": 500000,
+      "imgUrl": "https://i.imgur.com/Q4s5etI.png"
     }
   ]
 }
