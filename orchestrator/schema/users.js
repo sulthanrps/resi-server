@@ -47,6 +47,7 @@ const typeDefs = gql`
     ): Message
 
     topUpMidtrans(nominal: Int, access_token: String): Url
+    topUpBalance: Message
 
     login(email: String, password: String): access_token
   }
@@ -127,6 +128,8 @@ const resolvers = {
         throw error;
       }
     },
+
+
   },
 };
 

@@ -1,19 +1,12 @@
 const { createToken } = require("../helpers/jwt");
 const { User } = require("../models");
 const { compareHash } = require("../helpers/bcrypt");
-const midtransClient = require('midtrans-client')
+const midtransClient = require("midtrans-client");
 
 class Controller {
   static async register(req, res, next) {
     try {
-      let {
-        name,
-        email,
-        password,
-        role,
-        profileImg,
-        phoneNumber,
-      } = req.body;
+      let { name, email, password, role, profileImg, phoneNumber } = req.body;
       const balance = 0;
 
       const newUser = await User.create({
@@ -111,15 +104,15 @@ class Controller {
     }
   }
 
-  static async topup (req, res, next) {
+  static async topup(req, res, next) {
     try {
-      const {nominal} = req.body
-      const {email, id} = req.user
+      const { nominal } = req.body;
+      const { email, id } = req.user;
 
       let snap = new midtransClient.Snap({
         isProduction: false,
-        serverKey: process.env.MIDTRANS_SERVER_KEY
-      })
+        serverKey: process.env.MIDTRANS_SERVER_KEY,
+      });
 
       let parameter = {
         transaction_details: {
@@ -133,23 +126,32 @@ class Controller {
           email,
         },
       };
-     
+
       const transaction = await snap.createTransaction(parameter);
       let redirect_url = transaction.redirect_url;
 
-      res.status(200).json({redirect_url})
+      res.status(200).json({ redirect_url });
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
 
-  static topUpBalance(req, res, next) {
-    console.log(req.body)
-    // try {
-    //   console.log("ini di topup")
-    // } catch (error) {
-    //   next(error)
-    // }
+  static async topUpBalance(req, res, next) {
+    try {
+      let { order_id, transaction_status, gross_amount } = req.body;
+      const id = order_id.split("-");
+      const user = await User.findByPk(id[0]);
+
+      if (!user) throw { name: "Data not found" };
+      if (transaction_status !== "capture")
+        throw { name: "Service Unavailable" };
+
+      let balance = user.balance + +gross_amount;
+      await User.update({ balance }, { where: { id: id[0] } });
+      res.status(200).json({message: "Top Up successfull"})
+    } catch (error) {
+      next(error);
+    }
   }
 }
 
