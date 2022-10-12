@@ -128,13 +128,13 @@ const resolvers = {
       }
     },
 
-    washerRemoveBook: async (_, args) => {
+    washerUpdateBook: async (_, args) => {
       try {
         const { access_token, id, status } = args;
 
         const { data } = await axios({
           method: "patch",
-          url: `${APP_URL}/washers/books/${id}/remove`,
+          url: `${APP_URL}/washers/books/${id}/status`,
           headers: { access_token },
           data: { status },
         });
