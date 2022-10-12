@@ -39,6 +39,8 @@ const typeDefs = gql`
     patchStatusBook(id: ID, status: String, access_token: String): Response
 
     deleteItem(id: ID): Response
+
+    deleteBook(id: ID, access_token: String): Response
   }
 `;
 
@@ -53,7 +55,7 @@ const resolvers = {
         });
         return data;
       } catch ({ response }) {
-        return response.data.message;
+        return { message: response.data.message };
       }
     },
 
@@ -66,7 +68,7 @@ const resolvers = {
         });
         return data;
       } catch ({ response }) {
-        return response.data.message;
+        return { message: response.data.message };
       }
     },
   },
@@ -99,7 +101,7 @@ const resolvers = {
 
         return data;
       } catch ({ response }) {
-        throw response.data;
+        return { message: response.data.message };
       }
     },
 
@@ -119,7 +121,26 @@ const resolvers = {
         console.log(data);
         return data;
       } catch ({ response }) {
-        throw response.data;
+        return { message: response.data.message };
+      }
+    },
+
+    deleteBook: async (_, args) => {
+      try {
+        const { id, access_token } = args;
+
+        console.log(APP_URL + "/customers/" + id);
+        const { data } = await axios({
+          method: "delete",
+          url: APP_URL + "/customers/" + id,
+          headers: {
+            access_token,
+          },
+        });
+        console.log(data);
+        return data;
+      } catch ({ response }) {
+        return { message: response.data.message };
       }
     },
   },

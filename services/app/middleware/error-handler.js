@@ -26,5 +26,5 @@ module.exports = function (err, _, res, _) {
       break;
   }
   const { message, code } = data;
-  res.status(code).json({ message });
+  res.status(data.code).json({ message });
 };
