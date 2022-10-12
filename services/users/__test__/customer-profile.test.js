@@ -121,7 +121,7 @@ describe("================================ CUSTOMER PROFILE TEST ===============
       expect(res.body).toHaveProperty("message");
     });
 
-    test.skip("Empty profile image field request", async () => {
+    test("Empty profile image field request", async () => {
       //ini dibutuhkan tidak?
       const res = await req
         .patch(PROFILE_END_POINT)

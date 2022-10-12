@@ -39,9 +39,14 @@ describe("================================ WASHER CREDENTIAL TEST ==============
       const res = await req
         .post(REGISTER_END_POINT)
         .send({ name, email, password, profileImg, phoneNumber, role });
+
+      const user = await User.findOne({ where: { email } });
+
       expect(res.status).toBe(201);
       expect(res.body).toBeInstanceOf(Object);
       expect(res.body).toHaveProperty("access_token", expect.any(String));
+      expect(user).toBeInstanceOf(Object);
+      expect(user.balance).toBe(0);
     });
 
     test("Empty name request", async () => {

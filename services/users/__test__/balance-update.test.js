@@ -9,8 +9,9 @@ describe("================================ BALANCE UPDATE TEST =================
   const registeredPassword = "lelelele";
 
   let token;
+  let userId;
   beforeEach(async () => {
-    await User.create({
+    const user = await User.create({
       name: "ASEP",
       email: registeredMail,
       password: registeredPassword,
@@ -18,7 +19,7 @@ describe("================================ BALANCE UPDATE TEST =================
       phoneNumber: "08112121212",
       role: "customer",
     });
-
+    userId = user.id;
     const {
       body: { access_token },
     } = await req
@@ -39,51 +40,19 @@ describe("================================ BALANCE UPDATE TEST =================
     test("Success request", async () => {
       const VALUE = 10_000;
       const res = await req
-        .patch(BALANCE_END_POINT)
-        .set("access_token", token)
+        .patch(BALANCE_END_POINT + `/${userId}`)
         .send({ balance: VALUE });
 
-      const { balance } = await User.findOne({
-        where: { email: registeredMail },
-      });
+      const { balance } = await User.findByPk(userId);
 
       expect(res.status).toBe(200);
       expect(res.body).toBeInstanceOf(Object);
       expect(res.body).toHaveProperty("message");
       expect(balance).toBe(VALUE);
     });
-
-    test("Without access token request", async () => {
-      const res = await req.patch(BALANCE_END_POINT).send({ balance: 10_000 });
-
-      const { balance } = await User.findOne({
-        where: { email: registeredMail },
-      });
-
-      expect(res.status).toBe(401);
-      expect(res.body).toBeInstanceOf(Object);
-      expect(res.body).toHaveProperty("message");
-      expect(balance).toBe(0);
-    });
-
-    test("Without access token request", async () => {
-      const res = await req
-        .patch(BALANCE_END_POINT)
-        .set("access_token", "wrong token")
-        .send({ balance: 10_000 });
-
-      const { balance } = await User.findOne({
-        where: { email: registeredMail },
-      });
-
-      expect(res.status).toBe(401);
-      expect(res.body).toBeInstanceOf(Object);
-      expect(res.body).toHaveProperty("message");
-      expect(balance).toBe(0);
-    });
   });
 
-  describe.skip("Top-up balance by midtrans customer", () => {
+  describe("Top-up balance by midtrans", () => {
     test("Success request", async () => {
       const res = await req
         .patch(MIDTRANS_END_POINT)
@@ -91,12 +60,12 @@ describe("================================ BALANCE UPDATE TEST =================
         .send({ balance: 10_000 });
       expect(res.status).toBe(200);
       expect(res.body).toBeInstanceOf(Object);
-      expect(res.body).toHaveProperty("message");
+      expect(res.body).toHaveProperty("redirect_url");
     });
 
     test("Without access token request", async () => {
       const res = await req.patch(MIDTRANS_END_POINT).send({ balance: 10_000 });
-      expect(res.status).toBe(400);
+      expect(res.status).toBe(401);
       expect(res.body).toBeInstanceOf(Object);
       expect(res.body).toHaveProperty("message");
     });
@@ -106,7 +75,7 @@ describe("================================ BALANCE UPDATE TEST =================
         .patch(MIDTRANS_END_POINT)
         .set("access_token", "wrong token")
         .send({ balance: 10_000 });
-      expect(res.status).toBe(400);
+      expect(res.status).toBe(401);
       expect(res.body).toBeInstanceOf(Object);
       expect(res.body).toHaveProperty("message");
     });

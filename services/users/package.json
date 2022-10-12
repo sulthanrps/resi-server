@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --runInBand --forceExit --coverage",
+    "test": "jest --runInBand --forceExit --coverage --verbose",
     "reset": "npx sequelize-cli db:drop && npx sequelize-cli db:create && npx sequelize-cli db:migrate"
   },
   "repository": {
