@@ -5,6 +5,7 @@ const { USER_URL } = require("../constant");
 
 const typeDefs = gql`
   type User {
+    id: ID
     email: String
     name: String
     role: String
@@ -48,7 +49,6 @@ const typeDefs = gql`
     ): Message
 
     topUpMidtrans(nominal: Int, access_token: String): Url
-
     login(email: String, password: String): access_token
   }
 `;

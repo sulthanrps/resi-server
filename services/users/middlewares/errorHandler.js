@@ -28,6 +28,12 @@ const errorHandler = (err, req, res, next) => {
   } else if (err.name === "Unauthorized") {
     code = 401;
     message = err.name;
+  } else if (err.name === "Data not found") {
+    code = 404;
+    message = err.name;
+  } else if (err.name === "Service Unavailable") {
+    code = 503;
+    message = err.name;
   }
 
   res.status(code).json({ message });
