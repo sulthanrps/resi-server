@@ -1,7 +1,8 @@
 const { gql, UserInputError } = require("apollo-server");
 const redis = require("../config/");
 const axios = require("axios");
-const { USER_URL } = require("../constant");
+const { USER_URL, APP_URL } = require("../constant");
+const { assertValidExecutionArguments } = require("graphql/execution/execute");
 
 const typeDefs = gql`
   type User {
