@@ -22,7 +22,7 @@ const typeDefs = gql`
   }
 
   type Query {
-    getBooks(access_token: String): [Book]
+    getBooks(access_token: String, status: String): [Book]
     getBooksPending(access_token: String): [Book]
   }
 
@@ -49,10 +49,13 @@ const resolvers = {
   Query: {
     getBooks: async (_, args) => {
       try {
+        const { status, access_token } = args;
+        console.log(status);
         const { data } = await axios({
           method: "get",
           url: `${APP_URL}/customers`,
-          headers: args,
+          headers: { access_token },
+          params: { status: status },
         });
         return data;
       } catch ({ response }) {

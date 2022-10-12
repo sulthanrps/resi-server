@@ -1,8 +1,11 @@
 const type = require("../helpers/constant");
 
-module.exports = function (err, _, res, _) {
+module.exports = function (err, req, res, next) {
   let data = {};
   switch (err.name) {
+    case "SequelizeValidationError":
+      data = { code: 400, message: err.errors[0].message };
+      break;
     case type.washerPatch:
       data = { code: 401, message: "This book is already taken!" };
       break;
@@ -19,7 +22,28 @@ module.exports = function (err, _, res, _) {
       };
       break;
     case type.invalidJwt:
-      data = { code: 401, message: "Your token is no longer valid!" };
+      data = { code: 400, message: "Your token is no longer valid!" };
+      break;
+    case "emptyBookDate":
+      data = { code: 400, message: "Book date is empty" };
+      break;
+    case "emptyGrandTotal":
+      data = { code: 400, message: "Grand total is empty" };
+      break;
+    case "emptyBikeId":
+      data = { code: 400, message: "Bike category is empty" };
+      break;
+    case "emptyScheduleId":
+      data = { code: 400, message: "Schedule is empty" };
+      break;
+    case "emptyLocation":
+      data = { code: 400, message: "Location is empty" };
+      break;
+    case "emptyStatus":
+      data = { code: 400, message: "Status is empty" };
+      break;
+    case "notFound":
+      data = { code: 404, message: "Book is not found" };
       break;
     case "JsonWebTokenError":
       data = { code: 401, message: "Your Token is invalid!" };

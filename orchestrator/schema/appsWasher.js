@@ -84,6 +84,7 @@ const resolvers = {
     getWasherBooksByBooksId: async (_, args) => {
       try {
         const { access_token, id } = args;
+
         const { data } = await axios({
           method: "get",
           url: `${APP_URL}/washers/books/${id}`,

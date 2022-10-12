@@ -1,3 +1,4 @@
+
 const { Book, Bike } = require("../models");
 const type = require("../helpers/constant");
 const { Op } = require("sequelize");
@@ -10,6 +11,8 @@ module.exports = class Controller {
       const { status } = req.body;
       const { id: userId } = req.user;
 
+      if (!status) throw { name: "emptyStatus" };
+
       const book = await Book.findOne({
         where: {
           [Op.and]: [
@@ -19,7 +22,9 @@ module.exports = class Controller {
         },
       });
 
+
       if (!book) throw { name: type.status };
+
 
       await Book.update({ status }, { where: { id } });
 
@@ -41,7 +46,9 @@ module.exports = class Controller {
         where: { [Op.and]: [{ id }, { WasherId }] },
       });
 
+
       if (!book) throw { name: type.washerWrongPatch };
+
       await Book.update({ WasherId: null }, { where: { id } });
 
       res.status(200).json({
@@ -58,16 +65,18 @@ module.exports = class Controller {
       const { id: WasherId } = req.user;
       console.log(id);
 
+
       const book = await Book.findOne({
         where: { [Op.and]: [{ id }, { WasherId: null }] },
       });
 
       if (!book) throw { name: type.washerPatch };
 
+
       let data = await Book.update({ WasherId }, { where: { id } });
       if (!data[0]) throw { name: type.washerPatch };
 
-      res.status(200).json({ message: `Book ID: ${id} added` });
+      res.status(200).json({ message: `Book ID: ${id} picked` });
     } catch (error) {
       next(error);
     }
@@ -113,7 +122,11 @@ module.exports = class Controller {
 
   static async getBooksByIdPending(req, res, next) {
     try {
+
+      //const { lon, lat, dist = 2 } = req.body;
+
       const { lon, lat, dist = 2 } = req.query;
+
       const { id: WasherId } = req.user;
       const dataBooksWasher = await Book.findAll({
         where: { WasherId },
@@ -135,7 +148,6 @@ module.exports = class Controller {
             else return false;
           });
           const coor = JSON.parse(el.location);
-          // console.log(coor, lat, lon);
           el.dataValues.distance = getDistanceFromLatLonInKm(
             coor.lat,
             coor.lon,
@@ -143,7 +155,6 @@ module.exports = class Controller {
             lon
           );
           if (filtered.length == 0 && el.dataValues.distance <= dist) {
-            // console.log(el);
             return el;
           }
         })
@@ -152,15 +163,6 @@ module.exports = class Controller {
       res.status(200).json(newData);
     } catch (error) {
       next(error);
-    }
-  }
-
-  static async getTokenById(req, res, next) {
-    try {
-      const { id } = req.body;
-      res.status(200).json(createToken(id));
-    } catch (error) {
-      console.log(error);
     }
   }
 };

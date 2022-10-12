@@ -1,19 +1,27 @@
-const { Book } = require("../models");
+const { Book, Bike } = require("../models");
+
 const type = require("../helpers/constant");
 const { signToken } = require("../helpers/jwt");
+const { Op } = require("sequelize");
 
 module.exports = class Controller {
   static async getBooksByIdAll(req, res, next) {
     try {
+      console.log("masuk");
       const { id: UserId } = req.user;
+      let { status } = req.query;
+      if (!status) status = "taken";
+      console.log({ status });
 
       const data = await Book.findAll({
-        where: { UserId },
+        where: { [Op.and]: [{ UserId }, { status }] },
         order: [["updatedAt", "DESC"]],
+        include: { model: Bike },
       });
 
       res.status(200).json(data);
     } catch (error) {
+      console.log(error);
       next(error);
     }
   }
@@ -24,6 +32,8 @@ module.exports = class Controller {
 
       const data = await Book.findAll({
         where: { UserId, WasherId: null },
+        order: [["updatedAt", "DESC"]],
+        include: { model: Bike },
       });
 
       res.status(200).json(data);
@@ -38,12 +48,19 @@ module.exports = class Controller {
       const location = JSON.stringify({ lon, lat });
       const { id: UserId } = req.user;
 
+      if (!BookDate) throw { name: "emptyBookDate" };
+      if (!GrandTotal) throw { name: "emptyGrandTotal" };
+      if (!BikeId) throw { name: "emptyBikeId" };
+      if (!ScheduleId) throw { name: "emptyScheduleId" };
+      if (!location) throw { name: "emptyLocation" };
+
       const book = await Book.create({
         UserId,
         BookDate,
         GrandTotal,
         BikeId,
         ScheduleId,
+
         location,
         status: "wait for washer",
       });
@@ -62,9 +79,11 @@ module.exports = class Controller {
       const { status } = req.body;
       console.log(BookId);
 
+      if (!status) throw { name: "emptyStatus" };
+
       const book = await Book.findByPk(BookId);
 
-      if (!book) throw { name: type.washerWrongPatch };
+      if (!book) throw { name: "notFound" };
 
       await Book.update({ status }, { where: { id: BookId } });
       res.status(200).json({

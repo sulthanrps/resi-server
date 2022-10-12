@@ -61,9 +61,10 @@ async function bookData() {
     });
     data = data.filter((el) => el != null);
     // console.log(data);
-    randomBetweenRange(100, [1, data.length]).forEach(
-      (el) => delete data[el].WasherId
-    );
+    randomBetweenRange(100, [1, data.length]).forEach((el) => {
+      delete data[el].WasherId;
+      data[el].status = "pending";
+    });
     fs.writeFileSync(
       "./books.json",
       JSON.stringify({ books: data }, null, 2),
