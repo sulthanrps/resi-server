@@ -7,6 +7,7 @@ const { authentication } = require("../middleware/authentication");
 const Controller = require("../controllers/customer");
 
 router.post("/", Controller.getTokenById);
+
 router.use(authentication);
 router.use("/bikes", bikeRouter);
 router.use("/customers", customerRouter);
