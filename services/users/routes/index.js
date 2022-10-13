@@ -7,6 +7,7 @@ router.post('/register', Controller.register)
 router.post('/login', Controller.login)
 router.patch('/balance/:id', Controller.updateBalance)
 router.post('/topup', Controller.topUpBalance)
+router.get('/user/:id', Controller.findUser)
 
 router.use(authentication)
 
