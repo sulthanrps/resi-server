@@ -90,7 +90,7 @@ module.exports = class Controller {
       });
 
       res.status(201).json({
-        message: `Book ID: ${book.id} created`,
+        id: book.id,
       });
     } catch (error) {
       next(error);

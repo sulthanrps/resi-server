@@ -46,7 +46,10 @@ module.exports = class Controller {
 
       if (!book) throw { name: type.washerWrongPatch };
 
-      await Book.update({ WasherId: null }, { where: { id } });
+      await Book.update(
+        { WasherId: null, status: "pending" },
+        { where: { id } }
+      );
 
       res.status(200).json({
         message: `Book ID: ${id} removed`,
