@@ -199,7 +199,6 @@ class Controller {
       const user = await User.findByPk(id, {
         attributes: { exclude: ["password"] },
       })
-      if(!user) throw {name: "Data not found"}
 
       res.status(200).json(user)
     } catch (error) {
