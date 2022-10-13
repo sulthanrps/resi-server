@@ -58,7 +58,7 @@ module.exports = class Controller {
 
   static async patchPickBook(req, res, next) {
     try {
-      const { id } = req.params;
+      const { id, status = "taken" } = req.params;
       const { id: WasherId } = req.user;
 
       const book = await Book.findOne({
@@ -67,7 +67,7 @@ module.exports = class Controller {
 
       if (!book) throw { name: type.washerPatch };
 
-      let data = await Book.update({ WasherId }, { where: { id } });
+      let data = await Book.update({ WasherId, status }, { where: { id } });
       if (!data[0]) throw { name: type.washerPatch };
 
       res.status(200).json({ message: `Book ID: ${id} picked` });
