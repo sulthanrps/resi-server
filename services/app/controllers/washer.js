@@ -58,7 +58,7 @@ module.exports = class Controller {
 
   static async patchPickBook(req, res, next) {
     try {
-      const { id } = req.params;
+      const { id, status = "taken" } = req.params;
       const { id: WasherId } = req.user;
 
       const book = await Book.findOne({
