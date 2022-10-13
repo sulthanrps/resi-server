@@ -20,6 +20,10 @@ const typeDefs = gql`
     message: String
   }
 
+  type ResponseCreate {
+    id: ID
+  }
+
   type Query {
     getBooks(access_token: String, status: String): [Book]
     getBooksPending(access_token: String): [Book]
@@ -35,7 +39,7 @@ const typeDefs = gql`
       ScheduleId: Int!
       lon: String!
       lat: String!
-    ): Response
+    ): ResponseCreate
 
     patchStatusBook(id: ID, status: String, access_token: String): Response
 
