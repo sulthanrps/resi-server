@@ -1,7 +1,6 @@
-const { gql, UserInputError } = require("apollo-server");
-const redis = require("../config/");
+const { gql } = require("apollo-server");
 const axios = require("axios");
-const { USER_URL } = require("../constant");
+const { USER_URL, APP_URL } = require("../constant");
 
 const typeDefs = gql`
   type User {
@@ -35,7 +34,7 @@ const typeDefs = gql`
       name: String
       email: String
       password: String
-      profileImge: String
+      profileImg: String
       phoneNumber: String
       role: String
     ): access_token

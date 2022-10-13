@@ -72,6 +72,12 @@ module.exports = class Controller {
       if (!ScheduleId) throw { name: "emptyScheduleId" };
       if (!location) throw { name: "emptyLocation" };
 
+      if (!BookDate) throw { name: "emptyBookDate" };
+      if (!GrandTotal) throw { name: "emptyGrandTotal" };
+      if (!BikeId) throw { name: "emptyBikeId" };
+      if (!ScheduleId) throw { name: "emptyScheduleId" };
+      if (!location) throw { name: "emptyLocation" };
+
       const book = await Book.create({
         UserId,
         BookDate,
@@ -95,6 +101,10 @@ module.exports = class Controller {
     try {
       const { BookId } = req.params;
       const { id: WasherId } = req.user;
+
+      if (!status) throw { name: "emptyStatus" };
+
+      if (!status) throw { name: "emptyStatus" };
 
       const book = await Book.findByPk(BookId);
       if (book.status == "paid") throw { name: type.statusPaid };

@@ -1,7 +1,8 @@
 const { createToken } = require("../helpers/jwt");
-const { User } = require("../models");
+const { User, sequelize } = require("../models");
 const { compareHash } = require("../helpers/bcrypt");
 const midtransClient = require("midtrans-client");
+const axios = require("axios");
 
 class Controller {
   static async register(req, res, next) {
@@ -77,17 +78,56 @@ class Controller {
   }
 
   static async updateBalance(req, res, next) {
+    const t = await sequelize.transaction();
     try {
-      let balance = +req.body.balance;
-      const updateBalance = await User.update(
+      const { access_token } = req.query;
+      const bookId = req.params.id;
+      let balance;
+
+      const book = await axios({
+        url: `https://service-app-resi.herokuapp.com/customers/${bookId}`,
+        method: "GET",
+        headers: { access_token },
+      });
+      if (!book.data) throw { name: "Data not found" };
+
+      const customer = await User.findByPk(book.data.UserId);
+      if (!customer) throw { name: "Data not found" };
+
+      balance = customer.balance - book.data.GrandTotal;
+      if (balance < 0) throw { name: "Unsufficient balance" };
+
+      const balanceCustomer = await User.update(
         { balance },
-        { where: { id: req.params.id } }
+        { where: { id: book.data.UserId } },
+        { transaction: t }
       );
+      if (!balanceCustomer[0]) throw { name: "Bad Request" };
 
-      if (!updateBalance[0]) throw { name: "Bad Request" };
+      balance = 0;
 
-      res.status(200).json({ message: "Balance updated" });
+      const washer = await User.findByPk(book.data.WasherId);
+      if (!washer) throw { name: "Data not found" };
+
+      balance = washer.balance + book.data.GrandTotal;
+
+      const balanceWasher = await User.update(
+        { balance },
+        { where: { id: book.data.WasherId } },
+        { transaction: t }
+      );
+      if (!balanceWasher[0]) throw { name: "Bad Request" };
+
+      await axios({
+        method: "PATCH",
+        url: `https://service-app-resi.herokuapp.com/customers/${bookId}`,
+        headers: { access_token },
+      });
+
+      await t.commit();
+      res.status(200).json({ message: "Payment complete" });
     } catch (error) {
+      await t.rollback();
       next(error);
     }
   }
@@ -146,7 +186,7 @@ class Controller {
 
       let balance = user.balance + +gross_amount;
       await User.update({ balance }, { where: { id: id[0] } });
-      res.status(200).json({message: "Top Up successfull"})
+      res.status(200).json({ message: "Top Up successfull" });
     } catch (error) {
       next(error);
     }

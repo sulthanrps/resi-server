@@ -1,15 +1,11 @@
-FROM node:latest
-
-ENV PORT=6000
+FROM node:16.15.1
 
 WORKDIR /app
 
-COPY ["package.json", "package-lock.json*", "./"]
+COPY ["package.json", "package-lock.json", "./"]
 
 RUN npm install
 
-RUN npm install -g nodemon
-
 COPY . .
 
-CMD ["nodemon", "app.js"]
+CMD ["node", "app.js"]
