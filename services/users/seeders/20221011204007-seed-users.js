@@ -6,7 +6,7 @@ module.exports = {
     const data = require("../data/users.json").users.map((el) => {
       delete el.address;
       delete el.id;
-      el.password = hashPassword(el.password)
+      el.password = hashPassword(`${el.password}`)
       el.createdAt = new Date();
       el.updatedAt = new Date();
       return el;
