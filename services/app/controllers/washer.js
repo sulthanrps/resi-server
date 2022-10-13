@@ -67,7 +67,7 @@ module.exports = class Controller {
 
       if (!book) throw { name: type.washerPatch };
 
-      let data = await Book.update({ WasherId }, { where: { id } });
+      let data = await Book.update({ WasherId, status }, { where: { id } });
       if (!data[0]) throw { name: type.washerPatch };
 
       res.status(200).json({ message: `Book ID: ${id} picked` });
