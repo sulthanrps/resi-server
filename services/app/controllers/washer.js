@@ -1,8 +1,8 @@
-
 const { Book, Bike } = require("../models");
 const type = require("../helpers/constant");
 const { Op } = require("sequelize");
 const getDistanceFromLatLonInKm = require("../helpers/findDistance");
+const { washerPatch } = require("../helpers/constant");
 
 module.exports = class Controller {
   static async patchUpdateStatus(req, res, next) {
@@ -22,9 +22,7 @@ module.exports = class Controller {
         },
       });
 
-
       if (!book) throw { name: type.status };
-
 
       await Book.update({ status }, { where: { id } });
 
@@ -46,7 +44,6 @@ module.exports = class Controller {
         where: { [Op.and]: [{ id }, { WasherId }] },
       });
 
-
       if (!book) throw { name: type.washerWrongPatch };
 
       await Book.update({ WasherId: null }, { where: { id } });
@@ -63,15 +60,12 @@ module.exports = class Controller {
     try {
       const { id } = req.params;
       const { id: WasherId } = req.user;
-      console.log(id);
-
 
       const book = await Book.findOne({
         where: { [Op.and]: [{ id }, { WasherId: null }] },
       });
 
       if (!book) throw { name: type.washerPatch };
-
 
       let data = await Book.update({ WasherId }, { where: { id } });
       if (!data[0]) throw { name: type.washerPatch };
@@ -105,14 +99,13 @@ module.exports = class Controller {
     try {
       const { id: WasherId } = req.user;
       const { id } = req.params;
-
-      const books = await Book.findAll({
+      const books = await Book.findOne({
         include: { model: Bike },
-
         where: { WasherId, id },
       });
-      console.log(type);
+
       if (books.length == 0) throw { name: type.notfound };
+      console.log(WasherId, id);
 
       res.status(200).json(books);
     } catch (error) {
@@ -122,7 +115,6 @@ module.exports = class Controller {
 
   static async getBooksByIdPending(req, res, next) {
     try {
-
       //const { lon, lat, dist = 2 } = req.body;
 
       const { lon, lat, dist = 2 } = req.query;

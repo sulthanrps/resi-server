@@ -40,7 +40,7 @@ const typeDefs = gql`
       dist: Int
     ): [Book]
 
-    getWasherBooksByBooksId(access_token: String, id: ID): [Book]
+    getWasherBooksByBooksId(access_token: String, id: ID): Book
   }
 
   type Mutation {
@@ -84,12 +84,14 @@ const resolvers = {
     getWasherBooksByBooksId: async (_, args) => {
       try {
         const { access_token, id } = args;
+
+        console.log(id);
         const { data } = await axios({
           method: "get",
           url: `${APP_URL}/washers/books/${id}`,
           headers: { access_token },
         });
-        console.log("disini");
+        console.log(data);
         return data;
       } catch ({ response }) {
         return response.data.message;

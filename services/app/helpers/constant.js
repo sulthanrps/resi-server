@@ -5,6 +5,7 @@ const type = {
   invalidJwt: "jwt invalid",
   notfound: "notfound",
   status: "status noauth",
+  statusPaid: "ispaid",
 };
 
 module.exports = type;
