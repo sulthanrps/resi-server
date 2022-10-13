@@ -192,6 +192,20 @@ class Controller {
       next(error);
     }
   }
+
+  static async findUser(req, res, next) {
+    try {
+      const {id} = req. params
+      const user = await User.findByPk(id, {
+        attributes: { exclude: ["password"] },
+      })
+      if(!user) throw {name: "Data not found"}
+
+      res.status(200).json(user)
+    } catch (error) {
+      next(error)
+    }
+  }
 }
 
 module.exports = Controller;
