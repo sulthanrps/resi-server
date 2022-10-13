@@ -30,16 +30,12 @@ async function bookData() {
           let ran = (Math.random() * 3) / 100;
           let coor = [
             {
-              lon: 115.20079 + ran,
-              lat: -8.677578,
+              lon: 104.72097432403964 + ran,
+              lat: -2.91900492139149,
             },
             {
-              lon: 106.947828835767 + ran,
-              lat: -6.191868763798379,
-            },
-            {
-              lon: 108.3361907 + ran,
-              lat: -6.3329894,
+              lon: 115.20096953853496 + ran,
+              lat: -8.67755333483601,
             },
           ];
           data.push({
@@ -49,7 +45,7 @@ async function bookData() {
             WasherId: el,
             BikeId: Math.ceil(Math.random() * 7),
             ScheduleId: i,
-            location: coor[Math.floor(Math.random() * 3)],
+            location: coor[Math.floor(Math.random() * 2)],
             status: dataStatus[0],
           });
         }

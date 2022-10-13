@@ -4,12 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-
     "test": "jest --runInBand --forceExit --coverage",
     "reset": "npx sequelize-cli db:drop && npx sequelize-cli db:create && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
     "dev": "nodemon bin/www",
     "start": "node bin/www"
-
   },
   "repository": {
     "type": "git",
