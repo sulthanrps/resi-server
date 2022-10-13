@@ -91,7 +91,19 @@ const resolvers = {
           url: `${APP_URL}/washers/books/${id}`,
           headers: { access_token },
         });
-        console.log(data);
+
+        const dataCustomer = await axios({
+          method: "get",
+          url: `${USER_URL}/user/${data.UserId}`,
+        });
+
+        const dataWasher = await axios({
+          method: "get",
+          url: `${USER_URL}/user/${data.WasherId}`,
+        });
+
+        data.Customer = dataCustomer.data;
+        data.Washer = dataWasher.data;
         return data;
       } catch ({ response }) {
         return response.data.message;

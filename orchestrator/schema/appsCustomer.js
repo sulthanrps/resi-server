@@ -14,10 +14,26 @@ const typeDefs = gql`
     ScheduleId: Int
     status: String
     location: String
+    Customer: User
+    Washer: User
+  }
+
+  type User {
+    id: ID
+    email: String
+    name: String
+    role: String
+    profileImg: String
+    balance: Int
+    phoneNumber: String
   }
 
   type Response {
     message: String
+  }
+
+  type ResponseCreate {
+    id: ID
   }
 
   type Query {
@@ -35,7 +51,7 @@ const typeDefs = gql`
       ScheduleId: Int!
       lon: String!
       lat: String!
-    ): Response
+    ): ResponseCreate
 
     patchStatusBook(id: ID, status: String, access_token: String): Response
 
@@ -51,14 +67,28 @@ const resolvers = {
       try {
         const { access_token, id } = args;
 
-        const { data } = await axios({
+        let { data } = await axios({
           method: "get",
           url: `${APP_URL}/customers/${id}`,
           headers: { access_token },
         });
-        console.log("disini");
+
+        const dataCustomer = await axios({
+          method: "get",
+          url: `${USER_URL}/user/${data.UserId}`,
+        });
+
+        const dataWasher = await axios({
+          method: "get",
+          url: `${USER_URL}/user/${data.WasherId}`,
+        });
+
+        data.Customer = dataCustomer.data;
+        data.Washer = dataWasher.data;
+
         return data;
       } catch ({ response }) {
+        console.log(response);
         return response.data.message;
       }
     },
@@ -73,6 +103,7 @@ const resolvers = {
           headers: { access_token },
           params: { status: status },
         });
+
         return data;
       } catch ({ response }) {
         return { message: response.data.message };
